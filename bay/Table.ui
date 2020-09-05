@@ -72,10 +72,10 @@
 	{
 		%var string class_name = field["class_name"] |> default string "";
 		%var string class_name_table = field["class_name_table"] |> default string "";
-		%var Dict class_settings = field["class_settings"] |> default string "";
+		%var Dict class_settings = field["class_settings"] |> default Dict {};
 		
-		%if (rtl::exists(class_name_table)){ %var class_name = class_name_table; }
-		%if (rtl::exists(class_name))
+		%if (not rtl::isEmpty(class_name_table)){ %var class_name = class_name_table; }
+		%if (not rtl::isEmpty(class_name))
 		{
 			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name }
 				name={ field_name } row-index={ index } row-data={ row } table-model={ model }
