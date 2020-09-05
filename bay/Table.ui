@@ -1,0 +1,93 @@
+<!--
+ *  Bayrell Runtime Library
+ *
+ *  (c) Copyright 2016-2020 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+-->
+
+<class version="1.0"
+	name="Runtime.Web.Table.Table" extends="Runtime.Web.Component" 
+	module="Runtime.Web.Table" model="Runtime.Web.Table.TableModel"
+>
+
+<use name="Runtime.Core.Message" />
+<use name="Runtime.Web.LayoutModel" />
+<use name="Runtime.Web.Events.MouseClickEvent" />
+
+<style>
+</style>
+
+
+<template name="render">
+	<table>
+		{ static::renderRows(layout, model, params, content) }
+	</table>
+</template>
+
+
+<template name="renderRows">
+	%if (model.rows != null)
+	{
+		%for (int i=0; i<model.rows.count(); i++)
+		{
+			{ static::renderRow(layout, model, params, i) }
+		}
+	}
+</template>
+
+
+<template name="renderRow" args="LayoutModel layout, TableModel model, Dict params, int index">
+	%var Dict row = model.rows[index];
+	%var Collection<string> fields = params["fields"];
+	
+	<tr data-index={ index } @key={ "td-" ~ index }>
+	%for (int i=0; i<fields.count(); i++)
+	{
+		%var string field_name = fields[i];
+		<td data-name={ field_name }>{ static::renderCell(layout, model, params, row, field_name, index) }</td>
+	}
+	</tr>
+	
+</template>
+
+
+<template name="renderCell"
+	args="LayoutModel layout, TableModel model, Dict params, Dict row, string field_name, int index"
+>
+	%var Dict row = model.rows[index];
+	%var Dict field = params["struct"][field_name];
+	
+	%if (field != null)
+	{
+		%var string class_name = field["class_name"] |> default string "";
+		%var string class_name_table = field["class_name_table"] |> default string "";
+		%var Dict class_settings = field["class_settings"] |> default string "";
+		
+		%if (rtl::exists(class_name_table)){ %var class_name = class_name_table; }
+		%if (rtl::exists(class_name))
+		{
+			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name }
+				name={ field_name } row-index={ index } row-data={ row } table-model={ model }
+				...class_settings
+			/>
+		}
+	}
+</template>
+
+
+<script type="frontend">
+
+</script>
+
+</class>

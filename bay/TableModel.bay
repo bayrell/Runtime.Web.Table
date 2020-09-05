@@ -1,0 +1,114 @@
+/*!
+ *  Bayrell Runtime Library
+ *
+ *  (c) Copyright 2016-2020 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
+namespace Runtime.Web.Table;
+
+use Runtime.lib;
+use Runtime.BaseStruct;
+
+
+struct TableModel extends BaseStruct
+{
+	Collection<Dict> rows = null;
+	
+	
+	
+	/**
+	 * Returns item by id
+	 */
+	pure TableModel getItemById(TableModel model, int id)
+	{
+		if (model.rows == null)
+		{
+			return null;
+		}
+		return model.rows.findItem( lib::equalAttr("id", id) );
+	}
+	
+	
+	
+	/**
+	 * Add item
+	 */
+	pure TableModel addItem(TableModel model, Dict item)
+	{
+		if (model.rows == null)
+		{
+			model <= rows <= [];
+		}
+		model <= rows <= model.rows.pushIm(item);
+		return model;
+	}
+	
+	
+	
+	/**
+	 * Prepend item
+	 */
+	pure TableModel prependItem(TableModel model, Dict item)
+	{
+		if (model.rows == null)
+		{
+			model <= rows <= [];
+		}
+		model <= rows <= model.rows.prependIm(item);
+		return model;
+	}
+	
+	
+	
+	/**
+	 * Set item
+	 */
+	pure TableModel setItem(TableModel model, int id, Dict item)
+	{
+		if (model.rows == null)
+		{
+			model <= rows <= [];
+		}
+		
+		int pos = model.rows.find( lib::equalAttr("id", id) );
+		if (pos != -1)
+		{
+			model <= rows <= model.rows.setIm(pos, item);
+		}
+		
+		return model;
+	}
+	
+	
+	
+	/**
+	 * Remove item by id
+	 */
+	pure TableModel removeItemById(TableModel model, int id)
+	{
+		if (model.rows == null)
+		{
+			return model;
+		}
+		
+		int pos = model.rows.find( lib::equalAttr("id", id) );
+		if (pos != -1)
+		{
+			model <= rows <= model.rows.removeIm(pos);
+		}
+		
+		return model;
+	}
+}

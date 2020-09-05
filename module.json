@@ -1,0 +1,9 @@
+{
+	"name": "Runtime.Web.Table",
+	"assets":
+	[
+		"Table",
+		"TableModel",
+		"ModuleDescription"
+	]
+}
