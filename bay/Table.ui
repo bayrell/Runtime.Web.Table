@@ -31,6 +31,7 @@
 
 <template name="render">
 	<table>
+		{ static::renderHeader(layout, model, params, content) }
 		{ static::renderRows(layout, model, params, content) }
 	</table>
 </template>
@@ -47,15 +48,35 @@
 </template>
 
 
+<template name="renderHeader" args="LayoutModel layout, TableModel model, Dict params">
+	
+	%var Collection<string> fields = params["fields"];
+	
+	<tr class="header">
+	%for (int i=0; i<fields.count(); i++)
+	{
+		%var string field_name = fields[i];
+		%var Dict field = params["struct"][field_name];
+		<th class="th" class={ "th-" ~ field_name } data-name={ field_name } @key={ "th-" ~ field_name }>
+			{ field["label"] }
+		</th>
+	}
+	</tr>
+	
+</template>
+
+
 <template name="renderRow" args="LayoutModel layout, TableModel model, Dict params, int index">
 	%var Dict row = model.rows[index];
 	%var Collection<string> fields = params["fields"];
 	
-	<tr data-index={ index } @key={ "td-" ~ index }>
+	<tr class="row" data-index={ index } @key={ "tr-" ~ index }>
 	%for (int i=0; i<fields.count(); i++)
 	{
 		%var string field_name = fields[i];
-		<td data-name={ field_name }>{ static::renderCell(layout, model, params, row, field_name, index) }</td>
+		<td class="td" class={ "td-" ~ field_name } data-name={ field_name } @key={ "td-" ~ field_name }>
+			{ static::renderCell(layout, model, params, row, field_name, index) }
+		</td>
 	}
 	</tr>
 	
