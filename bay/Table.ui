@@ -30,7 +30,7 @@
 
 
 <template name="render">
-	<table>
+	<table class='table'>
 		{ static::renderHeader(layout, model, params, content) }
 		{ static::renderRows(layout, model, params, content) }
 	</table>
