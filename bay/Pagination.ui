@@ -1,0 +1,129 @@
+<!--
+ *  Bayrell Runtime Library
+ *
+ *  (c) Copyright 2016-2020 "Ildar Bikmamatov" <support@bayrell.org>
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+-->
+
+<class version="1.0"
+	name="Runtime.Web.Table.Pagination" extends="Runtime.Web.Component" 
+	module="Runtime.Web.Table"
+>
+
+<use name="Runtime.Core.Message" />
+<use name="Runtime.Web.LayoutModel" />
+<use name="Runtime.Web.Events.MouseClickEvent" />
+
+
+<style>
+%pagination{
+	text-align: center;
+	padding: 10px 0;
+}
+%pagination ul{
+	padding: 0;
+	margin: 0;
+}
+%pagination li{
+	display: inline-block;
+	vertical-align: top;
+	list-style: none;
+	margin-left: 5px;
+	margin-right: 5px;
+}
+%pagination li a, %pagination li a:hover, %pagination li span{
+	display: table-cell;
+	vertical-align: middle;
+	background-color: ${ vars["colors", "default", "background"] };
+	border: 1px ${ vars["colors", "default", "border"] } solid;
+	color: ${ vars["colors", "default", "text"] };
+	text-align: center;
+	width: 30px;
+	height: 30px;
+	font-size: 14px;
+	text-decoration: none;
+}
+%pagination li a:hover{
+	background-color: ${ vars["colors", "default", "hover-background"] };
+	color: ${ vars["colors", "default", "hover-text"] };
+}
+%pagination li.active a, %pagination li.active a:hover{
+	background-color: ${ vars["colors", "active", "background"] };
+	border: 1px ${ vars["colors", "active", "border"] } solid;
+	color: ${ vars["colors", "active", "text"] };
+}
+</style>
+
+
+<template name="render">
+	%var fn min = int (int a, int b) => a < b ? a : b;
+	%var int page = params["page"] |> default int 0;
+	%var int pages = params["pages"] |> default int 0;
+	%var int delta = params["delta"] |> default int 5;
+	%var int start = 2;
+	%var int end = min(pages - 1, page + delta);
+	%var Dict active = false;
+	
+	%if (pages > 1)
+	{
+		<nav class="pagination">
+			<ul>
+				%var active = false;
+				%if (page == 1) { %var active = true; }
+				<li class="btn page first" class={ active ? "active" : "" } @key="first">
+                    <a href={ rs::url_get_add(layout.uri, "page", 1) }>1</a>
+                </li>
+				
+				%if (pages - delta > 1)
+				{
+					<li class="btn skip" @key="skip_before">
+						<span>...</span>
+					</li>
+				}
+				
+				%if (start <= end)
+				{
+					%for (int i=start; i<=end; i++)
+					{
+						%var active = false;
+						%if (page == i) { %var active = true; }
+						<li class="btn page" class={ active ? "active" : "" } @key={ "page" ~ i }>
+							<a href={ rs::url_get_add(layout.uri, "page", i) }>{ i }</a>
+						</li>
+					}
+				}
+				
+				%if (end < pages - 1)
+				{
+					<li class="btn skip" @key="skip_after">
+						<span>...</span>
+					</li>
+				}
+				
+				%if (pages >= 2)
+				{
+					%var active = false;
+					%if (page == pages) { %var active = true; }
+					<li class="btn page last" class={ active ? "active" : "" } @key="last">
+						<a href={ rs::url_get_add(layout.uri, "page", pages) }>{ pages }</a>
+					</li>
+				}
+			</ul>
+		</nav>
+	}
+</template>
+
+
+
+</class>

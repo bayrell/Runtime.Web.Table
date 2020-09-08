@@ -26,6 +26,27 @@
 <use name="Runtime.Web.Events.MouseClickEvent" />
 
 <style>
+%table{
+	border-collapse: collapse;
+	border: 1px ${ vars["colors", "default", "border"] } solid;
+	margin-top: 10px;
+}
+%td, %th{
+	border: 1px ${ vars["colors", "default", "border"] } solid;
+	padding: 5px;
+}
+%row:hover td{
+	background-color: ${ vars["colors", "default", "hover-background"] };
+	color: ${ vars["colors", "default", "hover-text"] };
+}
+%td-edit-buttons{
+	margin-left: -2px;
+	margin-right: -2px;
+}
+%td-edit-buttons .button{
+	margin-left: 2px;
+	margin-right: 2px;
+}
 </style>
 
 
@@ -91,11 +112,17 @@
 	
 	%if (field != null)
 	{
+		<!-- Patch field settings -->
+		%var field = static::patchField(layout, field, model, params);
+		
 		%var string class_name = field["class_name"] |> default string "";
 		%var string class_name_table = field["class_name_table"] |> default string "";
 		%var Dict class_settings = field["class_settings"] |> default Dict {};
-		
 		%if (not rtl::isEmpty(class_name_table)){ %var class_name = class_name_table; }
+		
+		<!-- Patch class settings -->
+		%var class_settings = static::patchSettings(layout, field, class_settings, model, params);
+		
 		%if (not rtl::isEmpty(class_name))
 		{
 			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name }
@@ -108,6 +135,25 @@
 
 
 <script type="frontend">
+
+
+/**
+ * Patch field
+ */
+pure Dict patchField(LayoutModel layout, Dict field, var model, Dict params)
+{
+	return field;
+}
+
+
+
+/**
+ * Patch class settings
+ */
+pure Dict patchSettings(LayoutModel layout, Dict field, Dict class_settings, var model, Dict params)
+{
+	return class_settings;
+}
 
 </script>
 

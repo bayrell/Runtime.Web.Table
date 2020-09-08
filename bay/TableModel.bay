@@ -25,7 +25,10 @@ use Runtime.BaseStruct;
 struct TableModel extends BaseStruct
 {
 	Collection<Dict> rows = null;
-	
+	int page = 0;
+	int pages = 0;
+	int delta = 5;
+	int limit = 100;
 	
 	
 	/**

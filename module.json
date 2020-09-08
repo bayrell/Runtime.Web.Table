@@ -2,6 +2,7 @@
 	"name": "Runtime.Web.Table",
 	"assets":
 	[
+		"Pagination",
 		"Table",
 		"TableModel",
 		"ModuleDescription"
