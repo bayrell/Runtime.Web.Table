@@ -23,7 +23,9 @@
 
 <use name="Runtime.Core.Message" />
 <use name="Runtime.Web.LayoutModel" />
+<use name="Runtime.Web.CRUD.FieldInfo" />
 <use name="Runtime.Web.Events.MouseClickEvent" />
+
 
 <style>
 %table{
@@ -77,7 +79,7 @@
 	%for (int i=0; i<fields.count(); i++)
 	{
 		%var string field_name = fields[i];
-		%var Dict field = params["struct"][field_name];
+		%var FieldInfo field = FieldInfo::getFieldInfo(params["struct"], field_name);
 		<th class="th" class={ "th-" ~ field_name } data-name={ field_name } @key={ "th-" ~ field_name }>
 			{ field["label"] }
 		</th>
@@ -108,7 +110,7 @@
 	args="LayoutModel layout, TableModel model, Dict params, Dict row, string field_name, int index"
 >
 	%var Dict row = model.rows[index];
-	%var Dict field = params["struct"][field_name];
+	%var FieldInfo field = FieldInfo::getFieldInfo(params["struct"], field_name);
 	
 	%if (field != null)
 	{
@@ -126,7 +128,7 @@
 		%if (not rtl::isEmpty(class_name))
 		{
 			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name }
-				name={ field_name } row-index={ index } row-data={ row } table-model={ model }
+				name={ field_name } field-info={ field } row-index={ index } row-data={ row } table-model={ model }
 				...class_settings
 			/>
 		}
