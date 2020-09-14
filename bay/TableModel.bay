@@ -32,15 +32,40 @@ struct TableModel extends BaseStruct
 	
 	
 	/**
-	 * Returns item by id
+	 * Returns position of item
 	 */
-	pure TableModel getItemById(TableModel model, int id)
+	pure int findPos(TableModel model, Dict find)
+	{
+		Collection<string> keys = find.keys();
+		return model.rows.find
+		(
+			bool (Dict row) use (find, keys)
+			{
+				for (int i=0; i<keys.count(); i++)
+				{
+					string key = keys[i];
+					var value1 = find[key];
+					var value2 = row[key];
+					if (value1 != value2) return false;
+				}
+				return true;
+			}
+		);
+	}
+	
+	
+	
+	/**
+	 * Find first item
+	 */
+	pure TableModel getFirstItem(TableModel model, Dict find)
 	{
 		if (model.rows == null)
 		{
 			return null;
 		}
-		return model.rows.findItem( lib::equalAttr("id", id) );
+		int pos = static::findPos(model, find);
+		return model.rows.get(pos, null);
 	}
 	
 	
@@ -78,14 +103,14 @@ struct TableModel extends BaseStruct
 	/**
 	 * Set item
 	 */
-	pure TableModel setItem(TableModel model, int id, Dict item)
+	pure TableModel setItem(TableModel model, Dict find, Dict item)
 	{
 		if (model.rows == null)
 		{
 			model <= rows <= [];
 		}
 		
-		int pos = model.rows.find( lib::equalAttr("id", id) );
+		int pos = static::findPos(model, find);
 		if (pos != -1)
 		{
 			model <= rows <= model.rows.setIm(pos, item);
@@ -99,14 +124,14 @@ struct TableModel extends BaseStruct
 	/**
 	 * Remove item by id
 	 */
-	pure TableModel removeItemById(TableModel model, int id)
+	pure TableModel removeItem(TableModel model, Dict find)
 	{
 		if (model.rows == null)
 		{
 			return model;
 		}
 		
-		int pos = model.rows.find( lib::equalAttr("id", id) );
+		int pos = static::findPos(model, find);
 		if (pos != -1)
 		{
 			model <= rows <= model.rows.removeIm(pos);

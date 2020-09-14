@@ -110,6 +110,7 @@
 	args="LayoutModel layout, TableModel model, Dict params, Dict row, string field_name, int index"
 >
 	%var Dict row = model.rows[index];
+	%var Collection<FieldInfo> struct = params["struct"];
 	%var FieldInfo field = FieldInfo::getFieldInfo(params["struct"], field_name);
 	
 	%if (field != null)
@@ -127,7 +128,7 @@
 		
 		%if (not rtl::isEmpty(class_name))
 		{
-			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name }
+			<{class_name} @bind=["rows", index, field_name] used-by="table" @key={ field_name } struct={ struct }
 				name={ field_name } field-info={ field } row-index={ index } row-data={ row } table-model={ model }
 				...class_settings
 			/>
